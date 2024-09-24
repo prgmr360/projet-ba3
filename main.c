@@ -45,7 +45,7 @@ enum MenuName {
 
 enum ErrorCode {
     NO_ERROR,
-    SMALL_ERROR,
+    BIG_ERROR,
     INVALID_INPUT,
     MEMORY_ALLOCATION_FAILED,
     SUBJECT_NOT_FOUND,
@@ -53,7 +53,8 @@ enum ErrorCode {
     POSITION_NOT_VALID,
     NOT_ENOUGH_GRADES,
     MAX_GRADE,
-    INVALID_SUBJECT_NAME
+    INVALID_SUBJECT_NAME,
+    MDRRRRRRRRRRRRRRRR
 };
 
 void printMenu(Subject *subjects, int numberSubjects);
@@ -79,11 +80,7 @@ double setNewGrade(double *grade);
 
 int main(int argc, char *argv[]) {
 
-    printf("Hello world, this is me !\n");
-    printf("I'm the one you're looking for !\n");
-    printf("Hello world, this is me !\n");
-    printf("I'm the one you're looking for !\n");
-    printf("Hello world, this is me !\n");
+    printf("Hello world, this is me IAM freeeeeee !\n");
     printf("I'm the one you're looking for !\n");
     printf("Hello world, this is me !\n");
     printf("I'm the one you're looking for !\n");
