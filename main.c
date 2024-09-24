@@ -77,14 +77,9 @@ double setNewGrade(double *grade);
 
 int main(int argc, char *argv[]) {
 
-    printf("Hello world, this is me !\n");
+    printf("Hello world, this is me IAM freeeeeee !\n");
     printf("I'm the one you're looking for !\n");
     printf("Hello world, this is me !\n");
-    printf("I'm the one you're looking for !\n");
-    printf("Hello world, this is me !\n");
-    printf("I'm the one you're looking for !\n");
-    printf("Hello world, this is me !\n");
-    printf("I'm the one you're looking for !\n");
 
     return EXIT_SUCCESS;
     if (argc != 3) {
