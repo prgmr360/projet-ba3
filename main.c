@@ -5,7 +5,7 @@ Course:                 PRG2
 Year:                   2024
 Author:                 Clément Dieperink
 Creation Date:          15.01.2024
-Modification Author:    On a rien vu
+Modification Author:    Cest Soren
 Modification Date:      10.04.2024
 Version:                1.0
 Description:            This file implements a more advanced grades management
@@ -44,6 +44,7 @@ enum MenuName {
 
 enum ErrorCode {
     NO_ERROR,
+    BIG_ERROR,
     INVALID_INPUT,
     MEMORY_ALLOCATION_FAILED,
     SUBJECT_NOT_FOUND,
@@ -51,7 +52,8 @@ enum ErrorCode {
     POSITION_NOT_VALID,
     NOT_ENOUGH_GRADES,
     MAX_GRADE,
-    INVALID_SUBJECT_NAME
+    INVALID_SUBJECT_NAME,
+    MDRRRRRRRRRRRRRRRR
 };
 
 void printMenu(Subject *subjects, int numberSubjects);
