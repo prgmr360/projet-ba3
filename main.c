@@ -37,6 +37,7 @@ enum MenuName {
     MODIFY_GRADE,
     SWAP_GRADE,
     AVERAGE,
+    KIRIKOU,
     MODIFY_SUBJECT,
     ADD_SUBJECT,
     QUIT
@@ -44,6 +45,7 @@ enum MenuName {
 
 enum ErrorCode {
     NO_ERROR,
+    SMALL_ERROR,
     INVALID_INPUT,
     MEMORY_ALLOCATION_FAILED,
     SUBJECT_NOT_FOUND,
