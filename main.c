@@ -73,7 +73,7 @@ bool isValidPosition(const int, const int);
 int getPosition();
 bool getInputName(char *subjectName);
 int findSubjectIndex(Subject *subjects, const int numberSubjects, char *subjectName);
-double setNewGrade(double *grade);
+double setNewGrade(double *grade); //pipi
 
 int main(int argc, char *argv[]) {
 
