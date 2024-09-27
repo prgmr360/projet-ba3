@@ -1,4 +1,153 @@
 #include <stdio.h>
+
+//il faut creer une structure
+//size_t fread(&largeur, sizeof(short), 1, original); ???
+
+typedef struct
+{
+    int x;
+    int y;
+    unsigned char couleur;
+} pixel;
+
+typedef struct
+{
+    pixel *pixels; // Tableau dynamique de pixels
+    int nb_pixels; // Nombre de pixels dans la trace
+} trace;
+
+typedef struct
+{
+     pixel *pixels; // Tableau dynamique de pixels
+}corner;
+
+int compare_traces(const void *a, const void *b)
+{
+    trace *traceA = (trace *)a;
+    trace *traceB = (trace *)b;
+    return traceB->nb_pixels - traceA->nb_pixels; // Tri décroissant
+}
+
+
+int extract(const char *source_path, const char *dest_path)
+{
+    FILE *original = fopen(source_path, "rb");
+    if (original == NULL)
+    {
+        printf("Erreur lors de l'ouverture du fichier\n");//MESSAGE DERREUR
+        return -1;
+    }
+    int nbtraces = 0;
+    int histogramme[256] = 0; // Tableau de 256 cases initialisées à 0
+    short largeur;
+    fread(&largeur, sizeof(short), 1, original); 
+    short hauteur;
+    fread(&hauteur, sizeof(short), 1, original);
+    pixel **tabpix = malloc(largeur * sizeof(unsigned char *));  // Tableau de pixels
+    for (int i = 0; i < largeur; i++)
+    {
+        tabpix[i] = malloc(hauteur * sizeof(unsigned char)); 
+    }
+    for (int i=0; i<largeur; i++)
+    {
+        for (int j=0; j<hauteur; j++)
+        {
+            fread(&tabpix[i][j].couleur, sizeof(unsigned char), 1, original); // Lecture des pixels
+            tabpix[i][j].x = i; // Coordonnées du pixel
+            tabpix[i][j].y = j; // Coordonnées du pixel
+        }
+    }
+    fclose(original);
+
+    for (int i = 0; i < largeur; i++) // Parcours de l'image couleur
+    {
+        for (int j = 0; j < hauteur; j++)
+        {
+            histogramme[tabpix[i][j].couleur]++;
+        }
+    }
+
+    for (int k=0; k<256; k++) // Parcours de l'histogramme
+        if (histogramme[k] <=300 &&  histogramme[k]>=50)
+        {
+            nbtraces++;
+        }
+    }
+
+    trace *trace = malloc(nbtraces * sizeof(trace)); // Tableau de traces
+    for ( int i = 0; i < 256; i++)
+    {
+        trace[i].nb_pixels = malloc(histogramme[i] * sizeof(pixel));
+        for (int j = 0; j < histogramme[i]; j++)
+        {
+            trace[i].pixels[j].x = tabpix[i][j].x;
+            trace[i].pixels[j].y = tabpix[i][j].y;
+            trace[i].pixels[j].couleur = tabpix[i][j].couleur;
+        }
+    }
+
+    // Trier les traces par nombre de pixels en ordre décroissant
+    qsort(trace, nbtraces, sizeof(trace), compare_traces);
+
+    if (nbtraces > 5) // Garder les 5 plus grandes traces
+    {
+        for (int i = 5; i < nbtraces; i++)
+        {
+            free(trace[i].pixels);
+        }
+        nbtraces = 5;
+    }
+
+    corner *corner = malloc(4 * sizeof(corner)); // Tableau de 4 coins
+    for (int i = 0; i < 4; i++)
+    {
+        corner[i].pixels = malloc(4 * sizeof(pixel));
+        for (int j = 0; j < histogramme[i]; j++)
+        {
+            corner[i].pixels[j].x = tabpix[i][j].x;
+            corner[i].pixels[j].y = tabpix[i][j].y;
+            corner[i].pixels[j].couleur = tabpix[i][j].couleur;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <stdio.h>
