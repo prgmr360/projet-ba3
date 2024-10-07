@@ -269,11 +269,14 @@ int extract(const char *source_path, const char *dest_path)
     return 0;
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    
+    if (argc != 3) {
+        printf("Erreur, veuyez bien faire appelle a la partie C\n");
+        return 0;
+    }
 
-    if (extract("/Users/adriensouche/Desktop/projectc1/Pixmap.bin", "/Users/adriensouche/Desktop/projectc1/desttest1.txt") == 0)
+    if (extract("/Users/soren/Desktop/pixmap2.bin", "/Users/soren/Desktop/desttest1.txt") == 0)
     {
         printf("Extraction réussie\n");
     }
