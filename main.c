@@ -48,7 +48,21 @@ int extract(const char *source_path, const char *dest_path)
         return -1;
     }
      
-    
+
+    if (100>hauteur || 1000<hauteur) {//checking if hauteur is within  bounds
+        perror("Erreur lors de la lecture des dimensions, hauteur non-adequate");
+        fclose(original);
+        return -1;
+    }
+
+
+    if (100>largeur || 1000<largeur) {//checking if largeur is within  bounds
+        perror("Erreur lors de la lecture des dimensions, largeur non-adequate");
+        fclose(original);
+        return -1;
+    }
+    printf("%d, %d", largeur, hauteur);
+        
     
     int nbpix = hauteur * largeur;
 
@@ -59,7 +73,9 @@ int extract(const char *source_path, const char *dest_path)
         fclose(original);
         return -1;
     }
+    
     int test=0;
+    
     for (int i = 0; i < nbpix; i++)
     {
         if (fread(&tabpix[i].couleur, sizeof(unsigned char), 1, original) != 1)
@@ -144,6 +160,14 @@ int extract(const char *source_path, const char *dest_path)
             free(traces[i].pixels);
         }
         nbtraces = 5;
+    }
+    
+    if (nbtraces==0) {// Verifier si il y a au moins une trace
+        perror("Erreur, pas de trace");
+        free(tabpix);
+        for (int i = 0; i < nbtraces; i++) free(traces[i].pixels);
+        free(traces);
+        return -1;
     }
 
     corner *corners = malloc(4 * sizeof(corner)); // Tableau de 4 coins
@@ -239,9 +263,14 @@ int extract(const char *source_path, const char *dest_path)
     return 0;
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    if (extract("/Users/adriensouche/Desktop/projectc1/Pixmap.bin", "/Users/adriensouche/Desktop/projectc1/desttest1.txt") == 0)
+    if (argc != 3) {
+        printf("Erreur, veuyez bien faire appelle a la partie C\n");
+        return 0;
+    }
+
+    if (extract("/Users/soren/Desktop/pixmap2.bin", "/Users/soren/Desktop/desttest1.txt") == 0)
     {
         printf("Extraction réussie\n");
     }
