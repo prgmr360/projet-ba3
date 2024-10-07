@@ -61,7 +61,7 @@ int extract(const char *source_path, const char *dest_path)
         fclose(original);
         return -1;
     }
-    printf("%d, %d", largeur, hauteur);
+
         
     
     int nbpix = hauteur * largeur;
