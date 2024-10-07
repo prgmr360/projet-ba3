@@ -21,22 +21,14 @@ typedef struct
     unsigned char couleur;
 } corner;
 
-void tridecroissant(trace *traces, int nbtraces)
+int compare_traces(const void *a, const void *b)
 {
-    for (int i = 0; i < nbtraces - 1; i++)
-    {
-        for (int j = 0; j < nbtraces - i - 1; j++)
-        {
-            if (traces[j].nb_pixels < traces[j + 1].nb_pixels)
-            {
-                // Swap traces[j] and traces[j + 1]
-                trace temp = traces[j];
-                traces[j] = traces[j + 1];
-                traces[j + 1] = temp;
-            }
-        }
-    }
+    trace *traceA = (trace *)a;
+    trace *traceB = (trace *)b;
+    return traceB->nb_pixels - traceA->nb_pixels; // Tri décroissant
 }
+
+
 
 int extract(const char *source_path, const char *dest_path)
 {
@@ -56,8 +48,6 @@ int extract(const char *source_path, const char *dest_path)
         return -1;
     }
      
-    printf("%d, %d", largeur, hauteur);
-     
     
     
     int nbpix = hauteur * largeur;
@@ -69,7 +59,7 @@ int extract(const char *source_path, const char *dest_path)
         fclose(original);
         return -1;
     }
-
+    int test=0;
     for (int i = 0; i < nbpix; i++)
     {
         if (fread(&tabpix[i].couleur, sizeof(unsigned char), 1, original) != 1)
@@ -82,6 +72,14 @@ int extract(const char *source_path, const char *dest_path)
         tabpix[i].x = i % largeur;
         tabpix[i].y = hauteur - i / largeur;
     }
+    if (fread(&test, sizeof(unsigned char), 1, original) == 1)
+    {
+        perror("Trop de pixels");
+        free(tabpix);
+        fclose(original);
+        return -1;
+    }
+    
     
     fclose(original);
 
@@ -136,10 +134,11 @@ int extract(const char *source_path, const char *dest_path)
             trace_index++;
         }
     }
+    
 
     if (nbtraces > 5) // Garder les 5 plus grandes traces
     {
-        tridecroissant(traces, nbtraces); // Trier les traces par nombre de pixels en ordre décroissant
+        qsort(traces, nbtraces, sizeof(trace), compare_traces); // Trier les traces par nombre de pixels en ordre décroissant
         for (int i = 5; i < nbtraces; i++)
         {
             free(traces[i].pixels);
@@ -166,14 +165,10 @@ int extract(const char *source_path, const char *dest_path)
             corners[corner_index].y = tabpix[i].y;
             corners[corner_index].couleur = tabpix[i].couleur;
             corner_index++;
-            if (corner_index >= 4)
-            {
-                break;
-            }
         }
     }
 
-    if (corner_index < 4)
+    if (corner_index != 4)
     {
         perror("Erreur lors de la lecture des coins");
         free(tabpix);
@@ -194,21 +189,43 @@ int extract(const char *source_path, const char *dest_path)
         return -1;
     }
 
-    fprintf(destination, "Nombre de traces: %d\n", nbtraces); // Écrire le nombre de traces
-    for (int i = 0; i < nbtraces; i++)
-    {
-        fprintf(destination, "Trace %d: Nombre de pixels: %d\n", i, traces[i].nb_pixels); // Écrire le nombre de pixels dans la trace
-        for (int j = 0; j < traces[i].nb_pixels; j++)
-        {
-            fprintf(destination, "Pixel %d: x = %d, y = %d, couleur = %d\n", j, traces[i].pixels[j].x, traces[i].pixels[j].y, traces[i].pixels[j].couleur); // Écrire les coordonnées et la couleur du pixel
-        }
-    }
-
+    fprintf(destination, "Corners= [\n");
     for (int i = 0; i < 4; i++) // Écrire les 4 coins
     {
-        fprintf(destination, "Coin %d: x = %d, y = %d, couleur = %d\n", i, corners[i].x, corners[i].y, corners[i].couleur);
+        fprintf(destination, "%d, %d;\n",corners[i].x, corners[i].y);
     }
+    fprintf(destination, "];\n");
+    fprintf(destination,"\n");
+    
+    
+    for (int i = 0; i < nbtraces; i++)
+    {
+        fprintf(destination, "C%d= [\n", i);
+        for (int j = 0; j < traces[i].nb_pixels; j++)
+        {
+            fprintf(destination, "%d, %d;\n", traces[i].pixels[j].x, traces[i].pixels[j].y); // Écrire les coordonnées  du pixel
+        }
+        fprintf(destination, "];\n");
+        fprintf(destination,"\n");
+    }
+    
+    fprintf(destination, "T ={");
+    for (int i = 0; i < nbtraces; i++)
+    {
+        fprintf(destination, "C%d ", i);
+    }
+    fprintf(destination, "};");
+    
+    
     fclose(destination);
+    
+    fprintf(stdout, "C:");
+    fprintf(stdout, "%d\n", corners[0].couleur);
+    
+    fprintf(stdout, "T:");
+    for (int i=0; i<nbtraces; i++) fprintf(stdout, "%d ", traces[i].pixels[i].couleur);
+    fprintf(stdout, "\n");
+    
 
     // Libérer la mémoire allouée
     free(tabpix);
@@ -224,7 +241,7 @@ int extract(const char *source_path, const char *dest_path)
 
 int main()
 {
-    if (extract("/Users/adriensouche/Desktop/projectc1/pixmap2.bin", "/Users/adriensouche/Desktop/projectc1/desttest1.txt") == 0)
+    if (extract("/Users/adriensouche/Desktop/projectc1/Pixmap.bin", "/Users/adriensouche/Desktop/projectc1/desttest1.txt") == 0)
     {
         printf("Extraction réussie\n");
     }
